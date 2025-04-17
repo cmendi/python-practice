@@ -1,5 +1,6 @@
 import getpass
 import time
+import datetime
 
 # Configuration
 MAX_ATTEMPTS = 3
@@ -66,7 +67,9 @@ def login(username, password):
         current_pwd = getpass.getpass("Enter password: ")
 
         if current_user == username and current_pwd == password:
-            print("You are now logged in!")
+            now = datetime.datetime.now()
+            formatted = now.strftime('%d/%m/%Y, %H:%M:%S')
+            print(f"You are now logged in! (at {formatted})")
             return True
         else:
             attempts -= 1
