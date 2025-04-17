@@ -1,14 +1,13 @@
 import getpass
 
-MAX_CHAR = 3
+MAX_ATTEMPTS = 3
+
 
 # get new login info
-
-
 def get_user_input(prompt):
     while True:
         value = input(prompt)
-        if len(value) < MAX_CHAR:
+        if len(value) < MAX_ATTEMPTS:
             print('This field needs to be 3 or more chacters long, please try again.')
         else:
             return value
@@ -17,19 +16,19 @@ def get_user_input(prompt):
 def get_password_input(prompt):
     while True:
         value = getpass.getpass(prompt)
-        if len(value) < MAX_CHAR:
+        if len(value) < MAX_ATTEMPTS:
             print('This field needs to be 3 or more chacters long, please try again.')
         else:
             return value
 
 
 # new password confirmation
-def check_password(password):
+def check_password(password, original_password):
     while True:
-        pass_attempts = 3
+        pass_attempts = MAX_ATTEMPTS
         while pass_attempts > 0:
             value = getpass.getpass(password)
-            if value != new_password:
+            if value != original_password:
                 pass_attempts -= 1
                 print(
                     f'Password does not match, you have {pass_attempts} attempts left')
@@ -44,7 +43,7 @@ def check_password(password):
 def login(new_user, new_password):
 
     # user gets 3 failed attempts
-    failed_attempts = 3
+    failed_attempts = MAX_ATTEMPTS
     while failed_attempts > 0:
         # User inputs there current user name and password
         current_user = input('Enter username: ')
@@ -65,9 +64,26 @@ def login(new_user, new_password):
 
 
 # User inputs their new username and password
-new_user = get_user_input('Username: ')
-new_password = get_password_input('Password: ')
-confirm_password = check_password('Confirm Password: ')
+def register():
+    new_user = get_user_input('New Username: ')
+    new_password = get_password_input('New Password: ')
+    confirm_password = check_password('Confirm Password: ', new_password)
+
+    if confirm_password is False:
+        return None, None
+    return new_user, new_password
+
+
+while True:
+    new_user, new_password = register()
+
+    if not new_user:
+        try_again = input('Do you want to try again? (yes/no): ').lower()
+        if try_again != 'yes':
+            print("Goodbye!")
+            exit()
+    else:
+        break
 
 while True:
     success = login(new_user, new_password)
@@ -75,7 +91,8 @@ while True:
     if success:
         break
     else:
-        try_again = input('Do you want to try again? (yes/no): ').lower()
+        try_again = input(
+            'Do you want to try logging in again? (yes/no): ').lower()
         if try_again != 'yes':
             print("Goodbye!")
             break
